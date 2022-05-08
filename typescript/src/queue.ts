@@ -98,22 +98,53 @@ export const linkedListQueue = <T>(): Queue<T> => {
     isEmpty,
   };
 };
+
 export interface CyclicQueueNode<T> {
-  value: T;
+  // The value of a Cyclic Queue Node
+  // can be undefined if it is a placeholder
+  // or entrypoint node.
+  value: T | undefined;
   next: CyclicQueueNode<T>;
 }
 
 export const cyclicListQueue = <T>(): Queue<T> => {
-  const enqueue = (_value: T) => {
+  // @ts-ignore
+  let placeholder: CyclicQueueNode<T> = {
+    value: undefined,
+  };
+  placeholder.next = placeholder;
+
+  let entrypoint: CyclicQueueNode<T> = {
+    value: undefined,
+    next: placeholder,
+  };
+
+  const enqueue = (value: T) => {
+    let tmp = entrypoint.next;
+    let newNode: CyclicQueueNode<T> = {
+      value,
+      next: tmp.next,
+    };
+
+    entrypoint.next = newNode;
+    tmp.next = newNode;
+
     return;
   };
 
   const dequeue = () => {
-    return undefined;
+    let tmp = entrypoint.next.next.next;
+    entrypoint.next.next.next = tmp.next;
+
+    if (tmp === entrypoint.next) {
+      entrypoint.next = tmp.next;
+    }
+
+    return tmp.value;
   };
 
   const isEmpty = () => {
-    return true;
+    return entrypoint.next == entrypoint.next?.next;
   };
 
   return {
