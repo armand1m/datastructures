@@ -27,3 +27,7 @@ test('linked-list based queue', () => {
 test('cyclic-list based queue', () => {
   testQueue(Queue.cyclicListQueue());
 });
+
+test('doubly-linked-list based queue', () => {
+  testQueue(Queue.doublyLinkedListQueue());
+});

@@ -153,3 +153,50 @@ export const cyclicListQueue = <T>(): Queue<T> => {
     isEmpty,
   };
 };
+
+export interface DoublyLinkedListNode<T> {
+  // node value
+  value: T | undefined;
+  // link to the next node
+  next: DoublyLinkedListNode<T>;
+  // link to the previous node
+  previous: DoublyLinkedListNode<T>;
+}
+
+export const doublyLinkedListQueue = <T>(): Queue<T> => {
+  // @ts-ignore
+  let entrypoint: DoublyLinkedListNode<T> = {
+    value: undefined,
+  };
+  entrypoint.next = entrypoint;
+  entrypoint.previous = entrypoint;
+
+  const enqueue = (value: T) => {
+    let newNode: DoublyLinkedListNode<T> = {
+      value,
+      next: entrypoint.next,
+      previous: entrypoint,
+    };
+
+    newNode.next.previous = newNode;
+    entrypoint.next = newNode;
+  };
+
+  const dequeue = () => {
+    let tmp = entrypoint.previous;
+    let tmpValue = tmp.value;
+    tmp.previous.next = entrypoint;
+    entrypoint.previous = tmp.previous;
+    return tmpValue;
+  };
+
+  const isEmpty = () => {
+    return entrypoint.next === entrypoint;
+  };
+
+  return {
+    enqueue,
+    dequeue,
+    isEmpty,
+  };
+};
